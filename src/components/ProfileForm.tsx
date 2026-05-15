@@ -1,6 +1,13 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import { useAppState } from "@/lib/context";
 import { categories as allCategories } from "@/data/products";
 import ShapeIcon from "./ShapeIcon";
@@ -31,6 +38,13 @@ const DEFAULTS = {
   priceMax: 100,
   summary: "",
 };
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const LAST_EMAIL_KEY = "shapeshop:last-email";
+
+function isValidEmail(value: string): boolean {
+  return EMAIL_RE.test(value.trim());
+}
 
 export default function ProfileForm() {
   const { profile, setProfile } = useAppState();
@@ -66,6 +80,56 @@ export default function ProfileForm() {
 
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const hydrateFromProfile = useCallback((p: UserProfile) => {
+    setName(p.name);
+    setEmail(p.email);
+    setFavoriteShape(p.favoriteShape);
+    setSelectedCategories(p.categories);
+    setStylePreference(p.stylePreference);
+    setPriceMin(p.priceRange.min);
+    setPriceMax(p.priceRange.max);
+    setSummary(p.summary ?? "");
+  }, []);
+
+  const loadByEmail = useCallback(
+    async (rawEmail: string) => {
+      const value = rawEmail.trim();
+      if (!isValidEmail(value)) return;
+      setEmail(value);
+      try {
+        const res = await fetch(
+          `/api/profile?email=${encodeURIComponent(value)}`,
+          { cache: "no-store" },
+        );
+        if (res.ok) {
+          const fetched = (await res.json()) as UserProfile | null;
+          if (fetched) {
+            hydrateFromProfile(fetched);
+            setProfile(fetched);
+          }
+        }
+      } catch {
+        // network errors are non-fatal for a prefetch
+      }
+    },
+    [hydrateFromProfile, setProfile],
+  );
+
+  const didPrefetch = useRef(false);
+  useEffect(() => {
+    if (didPrefetch.current) return;
+    didPrefetch.current = true;
+    if (profile?.email) return;
+    if (typeof window === "undefined") return;
+    const last = window.localStorage.getItem(LAST_EMAIL_KEY);
+    if (last && isValidEmail(last)) {
+      queueMicrotask(() => {
+        void loadByEmail(last);
+      });
+    }
+  }, [profile, loadByEmail]);
 
   function toggleCategory(cat: string) {
     setSelectedCategories((prev) =>
@@ -73,13 +137,20 @@ export default function ProfileForm() {
     );
   }
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  const emailValid = isValidEmail(email);
+  const canSubmit = emailValid && name.trim().length > 0 && !submitting;
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSaved(false);
     setError(null);
 
-    if (!name.trim() || !email.trim()) {
-      setError("Name and email are required.");
+    if (!emailValid) {
+      setError("A valid email is required to save your profile.");
+      return;
+    }
+    if (!name.trim()) {
+      setError("Name is required.");
       return;
     }
     if (priceMin < 0 || priceMax < 0) {
@@ -91,7 +162,7 @@ export default function ProfileForm() {
       return;
     }
 
-    const next: UserProfile = {
+    const payload: UserProfile = {
       id: profile?.id ?? crypto.randomUUID(),
       name: name.trim(),
       email: email.trim(),
@@ -102,30 +173,73 @@ export default function ProfileForm() {
       summary: summary.trim() || undefined,
     };
 
-    setProfile(next);
-    setSaved(true);
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        setError(body?.error ?? "Failed to save profile. Please try again.");
+        return;
+      }
+      const savedProfile = (await res.json()) as UserProfile;
+      setProfile(savedProfile);
+      hydrateFromProfile(savedProfile);
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(LAST_EMAIL_KEY, savedProfile.email);
+      }
+      setSaved(true);
+    } catch {
+      setError("Failed to save profile. Please check your connection.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className="flex flex-col gap-1.5 text-sm">
-          <span className="font-medium text-slate-700">Name</span>
+          <span className="font-medium text-slate-700">
+            Email <span className="text-red-600" aria-hidden="true">*</span>
+            <span className="sr-only">(required)</span>
+          </span>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onBlur={(e) => void loadByEmail(e.target.value)}
+            required
+            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+            aria-required="true"
+            aria-invalid={email.length > 0 && !emailValid}
+            placeholder="you@example.com"
+            className={`h-10 rounded-lg border bg-white px-3 text-slate-900 outline-none transition-colors focus:ring-2 ${
+              email.length > 0 && !emailValid
+                ? "border-red-400 focus:border-red-500 focus:ring-red-200"
+                : "border-slate-300 focus:border-shape-circle-from focus:ring-shape-circle-from/30"
+            }`}
+          />
+          <span className="text-xs text-slate-500">
+            We use your email to save and load your profile.
+          </span>
+        </label>
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="font-medium text-slate-700">
+            Name <span className="text-red-600" aria-hidden="true">*</span>
+            <span className="sr-only">(required)</span>
+          </span>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-slate-900 outline-none transition-colors focus:border-shape-circle-from focus:ring-2 focus:ring-shape-circle-from/30"
-          />
-        </label>
-        <label className="flex flex-col gap-1.5 text-sm">
-          <span className="font-medium text-slate-700">Email</span>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            aria-required="true"
             className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-slate-900 outline-none transition-colors focus:border-shape-circle-from focus:ring-2 focus:ring-shape-circle-from/30"
           />
         </label>
@@ -272,9 +386,10 @@ export default function ProfileForm() {
       <div className="flex items-center justify-end gap-3">
         <button
           type="submit"
-          className="inline-flex h-11 items-center justify-center rounded-full bg-slate-900 px-6 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-700"
+          disabled={!canSubmit}
+          className="inline-flex h-11 items-center justify-center rounded-full bg-slate-900 px-6 text-sm font-medium text-white shadow-sm transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-400 disabled:hover:bg-slate-400"
         >
-          Save profile
+          {submitting ? "Saving..." : "Save profile"}
         </button>
       </div>
     </form>

@@ -1,4 +1,6 @@
-import type { Product } from "@/types";
+import { transformSlug } from "@/lib/shape-url";
+import type { Product, ShapeName } from "@/types";
+import { getShapeByName } from "./shapes";
 
 export const products: Product[] = [
   {
@@ -190,4 +192,46 @@ export function getProductsByShape(shape: Product["baseShape"]): Product[] {
 
 export function getProductById(id: string): Product | undefined {
   return products.find((p) => p.id === id);
+}
+
+/** Resolve `?transform=` to a canonical transform name, or null if it does not match this shape. */
+function resolveTransformForShape(
+  shapeName: ShapeName,
+  transformQuery: string,
+): string | null {
+  const shape = getShapeByName(shapeName);
+  if (!shape?.transformsInto.length) return null;
+  const q = transformQuery.trim().toLowerCase();
+  const normalized = q.replace(/-/g, " ");
+  const match = shape.transformsInto.find(
+    (t) =>
+      transformSlug(t.name) === q ||
+      t.name.toLowerCase() === normalized ||
+      t.name.toLowerCase() === q,
+  );
+  return match?.name ?? null;
+}
+
+/** Canonical transform name for a shape + `?transform=` value, or null if missing/unknown. */
+export function resolveTransformFromQuery(
+  shapeName: ShapeName,
+  transformQuery: string | null,
+): string | null {
+  if (!transformQuery?.trim()) return null;
+  return resolveTransformForShape(shapeName, transformQuery);
+}
+
+/** Filter catalog by optional base shape and optional transform (slug or label). */
+export function filterCatalog(
+  items: Product[],
+  shape: ShapeName | null,
+  transformQuery: string | null,
+): Product[] {
+  let list = items;
+  if (shape) list = list.filter((p) => p.baseShape === shape);
+  if (shape && transformQuery?.trim()) {
+    const resolved = resolveTransformForShape(shape, transformQuery);
+    if (resolved) list = list.filter((p) => p.expandedShape === resolved);
+  }
+  return list;
 }

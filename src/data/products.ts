@@ -186,6 +186,10 @@ export const products: Product[] = [
   },
 ];
 
+export const categories: string[] = Array.from(
+  new Set(products.map((p) => p.category)),
+).sort();
+
 export function getProductsByShape(shape: Product["baseShape"]): Product[] {
   return products.filter((p) => p.baseShape === shape);
 }

@@ -80,7 +80,7 @@ export default function ProductsPageClient() {
               ? `/explore?shape=${shapeFilter}${transformParam?.trim() ? `&transform=${encodeURIComponent(transformParam.trim())}` : ""}`
               : "/explore?shape=circle"
           }
-          className="inline-flex w-fit items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
+          className="inline-flex w-fit items-center rounded-xl bg-gradient-to-r from-slate-900 to-slate-800 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-slate-900/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.99]"
         >
           Open 3D explorer →
         </Link>
@@ -171,14 +171,16 @@ export default function ProductsPageClient() {
       </p>
 
       {filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 px-6 py-14 text-center">
-          <p className="text-lg font-medium text-slate-800">No matches</p>
+        <div className="rounded-2xl border border-dashed border-slate-300/90 bg-gradient-to-br from-slate-50 via-white to-sky-50/40 px-6 py-14 text-center shadow-inner">
+          <p className="text-lg font-semibold tracking-tight text-slate-900">
+            No matches
+          </p>
           <p className="mt-2 text-sm text-slate-600">
             Try another transformation or browse all shapes.
           </p>
           <Link
             href="/products"
-            className="mt-6 inline-flex rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
+            className="mt-6 inline-flex rounded-xl bg-gradient-to-r from-slate-900 to-slate-800 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-transform hover:scale-[1.02] active:scale-[0.99]"
           >
             Clear filters
           </Link>
@@ -210,10 +212,10 @@ function FilterPill({
       href={href}
       scroll={false}
       className={[
-        "rounded-full px-4 py-2 text-sm font-medium transition-colors",
+        "rounded-full px-4 py-2 text-sm font-medium transition-all duration-200",
         selected
-          ? "bg-slate-900 text-white shadow-sm"
-          : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50",
+          ? "bg-slate-900 text-white shadow-md shadow-slate-900/20 ring-2 ring-slate-900/10 ring-offset-2 ring-offset-slate-50"
+          : "border border-slate-200 bg-white text-slate-700 shadow-sm hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-md active:scale-[0.98]",
       ].join(" ")}
     >
       {label}

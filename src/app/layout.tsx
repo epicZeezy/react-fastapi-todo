@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
+import CartDrawer from "@/components/CartDrawer";
 import Navbar from "@/components/Navbar";
 import { AppStateProvider } from "@/lib/context";
 import "./globals.css";
@@ -20,11 +21,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
+    <html lang="en" className={`${spaceGrotesk.variable} h-full scroll-smooth antialiased`}>
+      <body className="min-h-full overflow-x-hidden flex flex-col bg-background font-sans text-foreground">
         <AppStateProvider>
           <Navbar />
           <div className="flex flex-1 flex-col">{children}</div>
+          <CartDrawer />
         </AppStateProvider>
       </body>
     </html>

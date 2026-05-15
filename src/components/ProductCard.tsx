@@ -1,6 +1,7 @@
 import { getShapeByName } from "@/data/shapes";
 import { formatPrice } from "@/lib/utils";
 import type { Product, ShapeName } from "@/types";
+import AddToCartButton from "./AddToCartButton";
 import ShapeNowButton from "./ShapeNowButton";
 
 const gradientBarClass: Record<ShapeName, string> = {
@@ -31,8 +32,8 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <article
       className={[
-        "flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm ring-1 ring-slate-900/5 transition-all duration-300",
-        "hover:-translate-y-0.5 hover:shadow-md",
+        "group/card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm ring-1 ring-slate-900/5 transition-all duration-300",
+        "hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-900/10 hover:ring-slate-900/10",
       ].join(" ")}
     >
       {/* Future: load product + inventory from Amplify Data (`generateClient`) instead of static `products`. */}
@@ -45,12 +46,12 @@ export default function ProductCard({ product }: ProductCardProps) {
       />
 
       <div className={["relative flex flex-1 flex-col p-5", softTintClass[product.baseShape]].join(" ")}>
-        <div className="mb-4 overflow-hidden rounded-xl border border-slate-200/80 bg-slate-100 shadow-inner">
+        <div className="mb-4 overflow-hidden rounded-xl border border-slate-200/80 bg-slate-100 shadow-inner ring-1 ring-inset ring-white/40">
           {/* eslint-disable-next-line @next/next/no-img-element -- remote placeholder host; configure `images.remotePatterns` to switch to `next/image`. */}
           <img
             src={product.imageUrl}
             alt=""
-            className="aspect-[4/3] h-auto w-full object-cover"
+            className="aspect-[4/3] h-auto w-full object-cover transition-transform duration-500 ease-out group-hover/card:scale-[1.04]"
             loading="lazy"
           />
         </div>
@@ -89,12 +90,22 @@ export default function ProductCard({ product }: ProductCardProps) {
           {formatPrice(product.price)}
         </p>
 
-        <ShapeNowButton
-          productId={product.id}
-          productName={product.name}
-          shapePath={shapePath}
-          accentShape={product.baseShape}
-        />
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <AddToCartButton
+            productId={product.id}
+            productName={product.name}
+            shapePath={shapePath}
+            price={product.price}
+            accentShape={product.baseShape}
+          />
+          <ShapeNowButton
+            productId={product.id}
+            productName={product.name}
+            shapePath={shapePath}
+            price={product.price}
+            accentShape={product.baseShape}
+          />
+        </div>
       </div>
     </article>
   );

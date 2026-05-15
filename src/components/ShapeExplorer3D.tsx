@@ -34,6 +34,20 @@ const gradientTabClass: Record<ShapeName, string> = {
   hexagon: "from-shape-hexagon-from to-shape-hexagon-to",
 };
 
+/** Soft outer bloom behind the canvas, keyed to the active base shape */
+const canvasAmbientGlowClass: Record<ShapeName, string> = {
+  circle:
+    "after:bg-gradient-to-br after:from-shape-circle-from/35 after:via-shape-circle-to/12 after:to-transparent",
+  square:
+    "after:bg-gradient-to-br after:from-shape-square-from/35 after:via-shape-square-to/12 after:to-transparent",
+  triangle:
+    "after:bg-gradient-to-br after:from-shape-triangle-from/35 after:via-shape-triangle-to/12 after:to-transparent",
+  rectangle:
+    "after:bg-gradient-to-br after:from-shape-rectangle-from/35 after:via-shape-rectangle-to/12 after:to-transparent",
+  hexagon:
+    "after:bg-gradient-to-br after:from-shape-hexagon-from/35 after:via-shape-hexagon-to/12 after:to-transparent",
+};
+
 type TransformMeshProps = {
   shapeName: ShapeName;
   transform: ShapeTransformation;
@@ -301,7 +315,7 @@ export default function ShapeExplorer3D({
 
   if (!shape || !activeTransform) {
     return (
-      <p className="rounded-2xl border border-slate-200 bg-white p-6 text-slate-600">
+      <p className="rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50 to-white p-6 text-sm leading-relaxed text-amber-950 shadow-sm ring-1 ring-amber-900/5">
         Shape data is missing. Return home and pick a shape again.
       </p>
     );
@@ -313,8 +327,15 @@ export default function ShapeExplorer3D({
 
   return (
     <div className="flex w-full flex-col gap-6">
-      <div className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-950 shadow-lg ring-1 ring-slate-900/5">
-        <div className="h-[min(58vh,520px)] w-full min-h-[320px]">
+      <div
+        className={[
+          "relative overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-950 shadow-xl shadow-slate-900/25 ring-1 ring-white/10",
+          "before:pointer-events-none before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/10 before:via-transparent before:to-transparent before:opacity-50",
+          "after:pointer-events-none after:absolute after:-inset-3 after:rounded-3xl after:opacity-70 after:blur-2xl after:content-[''] sm:after:opacity-90",
+          canvasAmbientGlowClass[shapeName],
+        ].join(" ")}
+      >
+        <div className="relative z-10 h-[min(58vh,520px)] w-full min-h-[280px] sm:min-h-[320px]">
           <Canvas
             shadows
             dpr={[1, 2]}
@@ -347,8 +368,8 @@ export default function ShapeExplorer3D({
                 className={[
                   "rounded-full px-4 py-2 text-sm font-medium transition-all duration-200",
                   selected
-                    ? `bg-gradient-to-r text-white shadow-md ${gradientTabClass[shapeName]}`
-                    : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50",
+                    ? `bg-gradient-to-r text-white shadow-md ring-2 ring-white/25 ${gradientTabClass[shapeName]}`
+                    : "border border-slate-200 bg-white/95 text-slate-700 shadow-sm hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-md active:scale-[0.98]",
                 ].join(" ")}
               >
                 {t.name}

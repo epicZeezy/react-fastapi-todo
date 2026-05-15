@@ -5,11 +5,15 @@ type ShapeIconProps = {
   className?: string;
 };
 
-const baseSvg =
-  "h-14 w-14 shrink-0 sm:h-16 sm:w-16 stroke-[1.75] sm:stroke-2 fill-none stroke-currentColor";
+const strokeOnly =
+  "shrink-0 stroke-[1.75] sm:stroke-2 fill-none stroke-currentColor";
+
+const defaultSize = "h-14 w-14 sm:h-16 sm:w-16";
 
 export default function ShapeIcon({ shape, className }: ShapeIconProps) {
-  const svgClass = [baseSvg, className].filter(Boolean).join(" ");
+  const svgClass = className
+    ? [strokeOnly, className].filter(Boolean).join(" ")
+    : [strokeOnly, defaultSize].join(" ");
 
   switch (shape) {
     case "circle":

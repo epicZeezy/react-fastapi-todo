@@ -14,8 +14,9 @@ const ShapeExplorer3DDynamic = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-[min(58vh,520px)] min-h-[320px] items-center justify-center rounded-2xl border border-slate-200 bg-slate-950 text-sm text-slate-400">
-        Loading 3D scene…
+      <div className="flex h-[min(58vh,520px)] min-h-[280px] flex-col items-center justify-center gap-3 rounded-2xl border border-slate-800 bg-slate-950 px-6 text-center sm:min-h-[320px]">
+        <div className="shimmer-loading h-10 w-10 rounded-full border border-slate-700/80" aria-hidden />
+        <p className="text-sm font-medium text-slate-300">Loading 3D scene…</p>
       </div>
     ),
   },
@@ -105,7 +106,7 @@ export default function ExplorePageClient() {
         </div>
         <Link
           href="/"
-          className="inline-flex w-fit items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
+          className="inline-flex w-fit items-center rounded-xl border border-slate-200/90 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md active:scale-[0.99]"
         >
           ← All shapes
         </Link>
@@ -117,7 +118,7 @@ export default function ExplorePageClient() {
         onTransformSelect={onTransformSelect}
       />
 
-      <p className="mt-10 text-center text-xs text-slate-400">
+      <p className="mt-10 text-center text-xs text-slate-400 sm:mt-12">
         Tip: URLs like{" "}
         <code className="rounded bg-slate-100 px-1.5 py-0.5 text-slate-600">
           /explore?shape=hexagon&amp;transform=hexagonal-prism

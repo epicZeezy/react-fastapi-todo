@@ -17,6 +17,7 @@ type ShapeNowButtonProps = {
   productId: string;
   productName: string;
   shapePath: string;
+  price: number;
   accentShape: ShapeName;
 };
 
@@ -24,6 +25,7 @@ export default function ShapeNowButton({
   productId,
   productName,
   shapePath,
+  price,
   accentShape,
 }: ShapeNowButtonProps) {
   const router = useRouter();
@@ -34,11 +36,13 @@ export default function ShapeNowButton({
     if (busy) return;
     setBusy(true);
     window.setTimeout(() => {
-      const order = placeOrder({ productId, productName, shapePath });
+      const order = placeOrder([
+        { productId, productName, shapePath, price, quantity: 1 },
+      ]);
       router.push(`/checkout/${order.id}`);
       setBusy(false);
     }, 300);
-  }, [busy, placeOrder, productId, productName, shapePath, router]);
+  }, [busy, placeOrder, price, productId, productName, shapePath, router]);
 
   return (
     <button
@@ -52,22 +56,34 @@ export default function ShapeNowButton({
         `bg-gradient-to-r ${buttonGradient[accentShape]}`,
       ].join(" ")}
     >
-      <svg
-        className="h-5 w-5 shrink-0 opacity-95"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden
-      >
-        <path d="M6 7h15l-1.5 9h-12z" />
-        <path d="M6 7 5 3H2" />
-        <circle cx="9" cy="20" r="1" />
-        <circle cx="18" cy="20" r="1" />
-      </svg>
-      {busy ? "Shaping…" : "Shape now"}
+      {busy ? (
+        <>
+          <span
+            className="h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-white/30 border-t-white"
+            aria-hidden
+          />
+          Shaping…
+        </>
+      ) : (
+        <>
+          <svg
+            className="h-5 w-5 shrink-0 opacity-95"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M6 7h15l-1.5 9h-12z" />
+            <path d="M6 7 5 3H2" />
+            <circle cx="9" cy="20" r="1" />
+            <circle cx="18" cy="20" r="1" />
+          </svg>
+          Shape now
+        </>
+      )}
     </button>
   );
 }

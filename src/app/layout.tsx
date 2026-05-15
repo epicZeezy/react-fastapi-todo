@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-background font-sans text-foreground">
+    <html lang="en" className={`${spaceGrotesk.variable} h-full scroll-smooth antialiased`}>
+      <body className="min-h-full overflow-x-hidden flex flex-col bg-background font-sans text-foreground">
         <AppStateProvider>
           <Navbar />
           <div className="flex flex-1 flex-col">{children}</div>

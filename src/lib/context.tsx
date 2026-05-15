@@ -14,6 +14,7 @@ export type PlaceOrderInput = {
   productId: string;
   productName: string;
   shapePath: string;
+  price: number;
 };
 
 type AppStateContextValue = {
@@ -57,6 +58,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         productId: input.productId,
         productName: input.productName,
         shapePath: input.shapePath,
+        price: input.price,
         status: "confirmed",
         createdAt: new Date().toISOString(),
       };

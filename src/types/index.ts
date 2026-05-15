@@ -46,6 +46,7 @@ export interface Order {
   productId: string;
   productName: string;
   shapePath: string;
+  price: number;
   status: "confirmed" | "processing" | "shipped";
   createdAt: string;
 }

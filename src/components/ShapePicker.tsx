@@ -56,15 +56,15 @@ export default function ShapePicker() {
         </p>
       </div>
 
-      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <ul className="shape-picker-stagger grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {shapes.map((shape) => (
           <li key={shape.id} className="min-w-0">
             <Link
               href={`/explore?shape=${shape.name}`}
               onClick={() => setShape(shape.name)}
               className={[
-                "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm transition-all duration-300",
-                "hover:-translate-y-1 hover:scale-[1.02] hover:border-transparent",
+                "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 p-6 shadow-sm ring-1 ring-slate-900/[0.03] transition-all duration-300",
+                "hover:-translate-y-1 hover:scale-[1.02] hover:border-white/0 hover:bg-white",
                 "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900",
                 hoverGlowClass[shape.name],
               ].join(" ")}

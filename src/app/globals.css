@@ -36,7 +36,16 @@
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgb(236 72 153 / 0.08), transparent 50%),
+    radial-gradient(ellipse 90% 60% at 100% 0%, rgb(99 102 241 / 0.06), transparent 45%),
+    radial-gradient(ellipse 70% 50% at 0% 100%, rgb(14 165 233 / 0.05), transparent 40%);
+  color: var(--foreground);
+}
+
+::selection {
+  background: rgb(236 72 153 / 0.22);
   color: var(--foreground);
 }
 
@@ -93,4 +102,134 @@ body {
 
 .animate-float-soft {
   animation: float-soft 5s ease-in-out infinite;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translate3d(0, -12vh, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--confetti-dx, 0), 105vh, 0) rotate(640deg);
+    opacity: 0.35;
+  }
+}
+
+.confetti-piece {
+  animation: confetti-fall 2.6s ease-in forwards;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.45s ease-out both;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+.shimmer-loading {
+  background: linear-gradient(
+    90deg,
+    rgb(241 245 249) 0%,
+    rgb(248 250 252) 45%,
+    rgb(241 245 249) 90%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+/* Staggered entrance for shape picker cards */
+.shape-picker-stagger > li:nth-child(1) {
+  animation-delay: 0.04s;
+}
+.shape-picker-stagger > li:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.shape-picker-stagger > li:nth-child(3) {
+  animation-delay: 0.16s;
+}
+.shape-picker-stagger > li:nth-child(4) {
+  animation-delay: 0.22s;
+}
+.shape-picker-stagger > li:nth-child(5) {
+  animation-delay: 0.28s;
+}
+
+.shape-picker-stagger > li {
+  animation: fade-in-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-soft,
+  .confetti-piece {
+    animation: none !important;
+  }
+
+  .animate-gradient-shift {
+    animation: none !important;
+    background-size: 100% auto;
+    background-position: 0% 50%;
+  }
+
+  .animate-fade-in-up,
+  .animate-fade-in {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
+  .shape-picker-stagger > li {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
+  .shimmer-loading {
+    animation: none;
+    background: rgb(241 245 249);
+  }
 }

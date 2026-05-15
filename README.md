@@ -1,49 +1,36 @@
-# Demo
-![GIF Demo](./demo.gif)
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-# Usage / Quick-Start
+## Getting Started
+
+First, run the development server:
 
 ```bash
-# clone repo
-git clone https://github.com/matsjfunke/react-fastapi-todo.git
-# start docker containers
-docker-compose -f docker-compose.yml up
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
-- access frontend @ localhost:3000 and test it out
-- access backend @ localhost:8000/docs for testing the endpoints,
-  or @ localhost:8000/openapi.json To generate the OpenAPI (formerly Swagger) documentation. 
 
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-# Comunication between react & fastapi
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-- this api.js file tells frontend where backend is located
-    ```javascript
-    /*
-    api.js creates an Axios instance named api with a base URL of http://localhost:8000,
-    which can be imported / used throughout the frontend app 
-    to send HTTP requests to the specified server.
-    */
-    import axios from 'axios'
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-    const api = axios.create({
-        baseURL: 'http://localhost:8000',
-    })
+## Learn More
 
-    export default api;
-    ```
+To learn more about Next.js, take a look at the following resources:
 
-- Cross-Origin Resource Sharing allows React frontend to access backend endpoints
-    ```python
-    origins = [
-        # react app runs there
-        "http://localhost:3000"
-    ]
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"]
-    )
-    ```
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

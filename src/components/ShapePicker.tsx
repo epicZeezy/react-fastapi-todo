@@ -4,7 +4,7 @@ import Link from "next/link";
 import { shapes } from "@/data/shapes";
 import { useAppState } from "@/lib/context";
 import type { ShapeName } from "@/types";
-import ShapeIcon from "./ShapeIcon";
+import ShapeHero from "./ShapeHero";
 
 const gradientHeadingClass: Record<ShapeName, string> = {
   circle: "from-shape-circle-from to-shape-circle-to",
@@ -14,12 +14,12 @@ const gradientHeadingClass: Record<ShapeName, string> = {
   hexagon: "from-shape-hexagon-from to-shape-hexagon-to",
 };
 
-const iconToneClass: Record<ShapeName, string> = {
-  circle: "text-shape-circle-from",
-  square: "text-shape-square-from",
-  triangle: "text-shape-triangle-from",
-  rectangle: "text-shape-rectangle-from",
-  hexagon: "text-shape-hexagon-from",
+const heroTintClass: Record<ShapeName, string> = {
+  circle: "bg-pink-50/60",
+  square: "bg-sky-50/60",
+  triangle: "bg-amber-50/60",
+  rectangle: "bg-emerald-50/60",
+  hexagon: "bg-violet-50/60",
 };
 
 const hoverGlowClass: Record<ShapeName, string> = {
@@ -77,16 +77,17 @@ export default function ShapePicker() {
                 aria-hidden
               />
 
-              <div className="mb-4 flex items-start justify-between gap-3">
-                <span
-                  className={[
-                    "inline-flex rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100 transition-transform duration-300 group-hover:scale-105",
-                    iconToneClass[shape.name],
-                  ].join(" ")}
-                >
-                  <ShapeIcon shape={shape.name} />
-                </span>
-                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium uppercase tracking-wide text-slate-500 transition-colors group-hover:bg-slate-900 group-hover:text-white">
+              <div
+                className={[
+                  "relative mb-4 flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-xl border border-slate-200/80 shadow-inner",
+                  heroTintClass[shape.name],
+                ].join(" ")}
+              >
+                <ShapeHero
+                  shape={shape.name}
+                  className="h-3/4 w-3/4 drop-shadow-sm transition-transform duration-500 group-hover:scale-105"
+                />
+                <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium uppercase tracking-wide text-slate-500 shadow-sm ring-1 ring-slate-200/70 transition-colors group-hover:bg-slate-900 group-hover:text-white">
                   Explore
                 </span>
               </div>

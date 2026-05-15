@@ -1,26 +1,96 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --background: #fafafa;
+  --foreground: #0f172a;
+
+  /* Base shape gradients (from → to), used in Tailwind + custom utilities */
+  --shape-circle-from: #ec4899;
+  --shape-circle-to: #9333ea;
+  --shape-square-from: #0ea5e9;
+  --shape-square-to: #06b6d4;
+  --shape-triangle-from: #f97316;
+  --shape-triangle-to: #eab308;
+  --shape-rectangle-from: #22c55e;
+  --shape-rectangle-to: #14b8a6;
+  --shape-hexagon-from: #6366f1;
+  --shape-hexagon-to: #a855f7;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-shape-circle-from: var(--shape-circle-from);
+  --color-shape-circle-to: var(--shape-circle-to);
+  --color-shape-square-from: var(--shape-square-from);
+  --color-shape-square-to: var(--shape-square-to);
+  --color-shape-triangle-from: var(--shape-triangle-from);
+  --color-shape-triangle-to: var(--shape-triangle-to);
+  --color-shape-rectangle-from: var(--shape-rectangle-from);
+  --color-shape-rectangle-to: var(--shape-rectangle-to);
+  --color-shape-hexagon-from: var(--shape-hexagon-from);
+  --color-shape-hexagon-to: var(--shape-hexagon-to);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Full-shape gradient utilities for cards, heroes, and CTAs */
+.gradient-shape-circle {
+  background-image: linear-gradient(
+    135deg,
+    var(--shape-circle-from),
+    var(--shape-circle-to)
+  );
+}
+
+.gradient-shape-square {
+  background-image: linear-gradient(
+    135deg,
+    var(--shape-square-from),
+    var(--shape-square-to)
+  );
+}
+
+.gradient-shape-triangle {
+  background-image: linear-gradient(
+    135deg,
+    var(--shape-triangle-from),
+    var(--shape-triangle-to)
+  );
+}
+
+.gradient-shape-rectangle {
+  background-image: linear-gradient(
+    135deg,
+    var(--shape-rectangle-from),
+    var(--shape-rectangle-to)
+  );
+}
+
+.gradient-shape-hexagon {
+  background-image: linear-gradient(
+    135deg,
+    var(--shape-hexagon-from),
+    var(--shape-hexagon-to)
+  );
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-float-soft {
+  animation: float-soft 5s ease-in-out infinite;
 }

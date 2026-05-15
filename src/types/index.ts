@@ -13,6 +13,7 @@ export interface UserProfile {
   categories: string[];
   stylePreference: "minimal" | "bold" | "classic" | "playful";
   priceRange: { min: number; max: number };
+  summary?: string;
 }
 
 export interface ShapeTransformation {

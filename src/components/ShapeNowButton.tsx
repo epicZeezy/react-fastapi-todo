@@ -36,12 +36,9 @@ export default function ShapeNowButton({
     if (busy) return;
     setBusy(true);
     window.setTimeout(() => {
-      const order = placeOrder({
-        productId,
-        productName,
-        shapePath,
-        price,
-      });
+      const order = placeOrder([
+        { productId, productName, shapePath, price, quantity: 1 },
+      ]);
       router.push(`/checkout/${order.id}`);
       setBusy(false);
     }, 300);

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import CartIconButton from "@/components/CartIconButton";
 import ShapeShopLogoMark from "@/components/ShapeShopLogoMark";
 
 const links = [
@@ -68,6 +69,7 @@ export default function Navbar() {
               </Link>
             );
           })}
+          <CartIconButton />
         </nav>
       </div>
     </header>

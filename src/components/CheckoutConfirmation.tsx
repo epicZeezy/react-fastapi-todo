@@ -98,10 +98,13 @@ export default function CheckoutConfirmation({
     [orders, orderId],
   );
 
-  const product = order
-    ? products.find((p) => p.id === order.productId)
+  const firstItem = order?.items[0];
+  const product = firstItem
+    ? products.find((p) => p.id === firstItem.productId)
     : undefined;
   const accentShape: ShapeName = product?.baseShape ?? "circle";
+  const totalQuantity =
+    order?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 
   useEffect(() => {
     if (!order) return;
@@ -170,22 +173,45 @@ export default function CheckoutConfirmation({
           />
 
           <div className="space-y-6 p-6 sm:p-8">
+            <div>
+              <p className="mb-3 text-sm font-medium text-slate-500">
+                {order.items.length === 1
+                  ? "Item"
+                  : `${order.items.length} items · ${totalQuantity} pieces`}
+              </p>
+              <ul className="divide-y divide-slate-200/80 rounded-xl border border-slate-200/80 bg-slate-50/40">
+                {order.items.map((item) => (
+                  <li
+                    key={item.productId}
+                    className="flex items-start justify-between gap-4 p-4"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-slate-900">
+                        {item.productName}
+                      </p>
+                      <p className="mt-0.5 truncate text-xs text-slate-500">
+                        {item.shapePath}
+                      </p>
+                      {item.quantity > 1 ? (
+                        <p className="mt-1 text-[11px] text-slate-500">
+                          Qty {item.quantity} · {formatPrice(item.price)} each
+                        </p>
+                      ) : null}
+                    </div>
+                    <p className="shrink-0 text-sm font-semibold text-slate-900">
+                      {formatPrice(item.price * item.quantity)}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             <dl className="space-y-4 text-sm">
-              <div>
-                <dt className="font-medium text-slate-500">Product</dt>
-                <dd className="text-lg font-semibold text-slate-900">
-                  {order.productName}
-                </dd>
-              </div>
-              <div>
-                <dt className="font-medium text-slate-500">Shape path</dt>
-                <dd className="text-slate-800">{order.shapePath}</dd>
-              </div>
               <div className="flex flex-wrap gap-8">
                 <div>
                   <dt className="font-medium text-slate-500">Total</dt>
                   <dd className="text-lg font-semibold text-slate-900">
-                    {formatPrice(order.price)}
+                    {formatPrice(order.total)}
                   </dd>
                 </div>
                 <div>

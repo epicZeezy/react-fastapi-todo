@@ -1,6 +1,7 @@
 import { getShapeByName } from "@/data/shapes";
 import { formatPrice } from "@/lib/utils";
 import type { Product, ShapeName } from "@/types";
+import AddToCartButton from "./AddToCartButton";
 import ShapeNowButton from "./ShapeNowButton";
 
 const gradientBarClass: Record<ShapeName, string> = {
@@ -89,13 +90,22 @@ export default function ProductCard({ product }: ProductCardProps) {
           {formatPrice(product.price)}
         </p>
 
-        <ShapeNowButton
-          productId={product.id}
-          productName={product.name}
-          shapePath={shapePath}
-          price={product.price}
-          accentShape={product.baseShape}
-        />
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <AddToCartButton
+            productId={product.id}
+            productName={product.name}
+            shapePath={shapePath}
+            price={product.price}
+            accentShape={product.baseShape}
+          />
+          <ShapeNowButton
+            productId={product.id}
+            productName={product.name}
+            shapePath={shapePath}
+            price={product.price}
+            accentShape={product.baseShape}
+          />
+        </div>
       </div>
     </article>
   );

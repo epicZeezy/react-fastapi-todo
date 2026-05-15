@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
+import CartDrawer from "@/components/CartDrawer";
 import Navbar from "@/components/Navbar";
 import { AppStateProvider } from "@/lib/context";
 import "./globals.css";
@@ -25,6 +26,7 @@ export default function RootLayout({
         <AppStateProvider>
           <Navbar />
           <div className="flex flex-1 flex-col">{children}</div>
+          <CartDrawer />
         </AppStateProvider>
       </body>
     </html>

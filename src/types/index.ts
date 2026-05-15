@@ -41,13 +41,19 @@ export interface Product {
   reason: string;
 }
 
-export interface Order {
-  id: string;
-  userId: string;
+export interface OrderItem {
   productId: string;
   productName: string;
   shapePath: string;
   price: number;
+  quantity: number;
+}
+
+export interface Order {
+  id: string;
+  userId: string;
+  items: OrderItem[];
+  total: number;
   status: "confirmed" | "processing" | "shipped";
   createdAt: string;
 }
